@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Куратор Күнделігі</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F6FC;
+    --surface:#FFFFFF;
+    --surface-2:#F1F3FA;
+    --ink:#151C2E;
+    --ink-soft:#4B5468;
+    --accent:#4A8FE7;
+    --accent-dark:#3B79D1;
+    --accent-soft:#EAF2FE;
+    --success:#2FAE6B;
+    --success-bg:#E6F7ED;
+    --danger:#E1575A;
+    --danger-bg:#FDECEC;
+    --muted:#8A90A6;
+    --border:#E7E9F3;
+    --shadow: 0 1px 2px rgba(21,28,46,0.04), 0 10px 28px rgba(74,143,231,0.08);
+    --radius:18px;
+    --radius-pill:100px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Manrope',sans-serif;
+    min-height:100vh;
+  }
+  h1,h2,h3,.display{font-family:'Manrope',sans-serif;font-weight:800;letter-spacing:-0.01em;}
+  .num{font-family:'Manrope',sans-serif;font-weight:700;}
+  button{font-family:inherit;cursor:pointer;}
+  input,select,textarea{font-family:inherit;}
+  ::selection{background:var(--accent-soft);}
+
+  /* ---------- LOGIN ---------- */
+  #login-screen{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:
+      repeating-linear-gradient(-35deg, rgba(74,143,231,0.05) 0px, rgba(74,143,231,0.05) 1px, transparent 1px, transparent 90px),
+      var(--bg);
+  }
+  .login-card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:40px 32px 32px;position:relative;overflow:hidden;}
+  .login-mark{display:flex;flex-direction:column;gap:1px;margin-bottom:22px;}
+  .login-mark .word{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-0.02em;}
+  .login-mark .sub{font-size:10.5px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;}
+  .login-card h1{font-size:24px;margin:0 0 6px;color:var(--ink);font-weight:800;}
+  .login-card p.sub{margin:0 0 26px;color:var(--muted);font-size:14px;line-height:1.5;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
+  .field input, .field select, .field textarea{width:100%;padding:12px 14px;border:1.5px solid transparent;border-radius:12px;font-size:14.5px;background:var(--surface-2);color:var(--ink);outline:none;transition:border-color .15s, background .15s;}
+  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--accent);background:#fff;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:var(--radius-pill);border:none;font-weight:700;font-size:14.5px;transition:transform .1s, opacity .15s, box-shadow .15s;}
+  .btn:active{transform:scale(0.98);}
+  .btn-primary{background:var(--accent);color:#fff;width:100%;padding:13px;box-shadow:0 8px 20px rgba(74,143,231,0.35);}
+  .btn-primary:hover{background:var(--accent-dark);}
+  .btn-accent{background:var(--accent);color:#fff;box-shadow:0 6px 16px rgba(74,143,231,0.3);}
+  .btn-accent:hover{background:var(--accent-dark);}
+  .btn-ghost{background:var(--surface);color:var(--ink-soft);border:1.5px solid var(--border);}
+  .btn-danger{background:var(--danger-bg);color:var(--danger);}
+  .btn-sm{padding:8px 14px;font-size:13px;}
+  .login-error{background:var(--danger-bg);color:var(--danger);font-size:13.5px;padding:10px 12px;border-radius:10px;margin-bottom:14px;display:none;}
+  .config-warning{position:fixed;bottom:0;left:0;right:0;background:#1E293B;color:#CFE0FA;font-size:12.5px;padding:9px 16px;text-align:center;z-index:999;}
+
+  /* ---------- APP SHELL ---------- */
+  #app{display:none;min-height:100vh;}
+  .shell{display:flex;min-height:100vh;}
+  .sidebar{width:252px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);color:var(--ink-soft);display:flex;flex-direction:column;padding:22px 14px;}
+  .brand{display:flex;align-items:center;gap:10px;padding:0 8px 20px;border-bottom:1px solid var(--border);margin-bottom:16px;}
+  .brand .mark{width:36px;height:36px;border-radius:11px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:15px;box-shadow:0 6px 14px rgba(74,143,231,0.35);}
+  .brand .name{font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-0.01em;}
+  .brand .role{font-size:11px;color:var(--muted);}
+  .nav-group-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:14px 10px 6px;font-weight:700;}
+  .nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:12px;color:var(--ink-soft);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:2px;transition:background .12s, color .12s;}
+  .nav-item:hover{background:var(--surface-2);}
+  .nav-item.active{background:var(--accent-soft);color:var(--accent-dark);}
+  .sidebar-footer{margin-top:auto;padding-top:14px;border-top:1px solid var(--border);}
+  .logout-btn{width:100%;background:var(--surface-2);color:var(--ink-soft);border:none;padding:11px;border-radius:12px;font-size:13.5px;font-weight:700;}
+  .logout-btn:hover{background:var(--danger-bg);color:var(--danger);}
+
+  .main{flex:1;padding:32px 40px;overflow-y:auto;max-height:100vh;}
+  .page-title{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:26px;flex-wrap:wrap;gap:10px;}
+  .page-title h2{font-size:25px;margin:0;font-weight:800;}
+  .page-title .desc{color:var(--muted);font-size:13.5px;margin-top:4px;font-weight:500;}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:20px;}
+  .card h3{margin:0 0 4px;font-size:16.5px;font-weight:800;}
+  .card .card-sub{color:var(--muted);font-size:13px;margin-bottom:16px;font-weight:500;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  @media(max-width:720px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{text-align:left;padding:9px 10px;color:var(--muted);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;border-bottom:1.5px solid var(--border);}
+  td{padding:11px 10px;border-bottom:1px solid var(--border);font-weight:500;}
+  tr:last-child td{border-bottom:none;}
+
+  .badge{display:inline-block;padding:3px 11px;border-radius:100px;font-size:12px;font-weight:700;}
+  .badge-success{background:var(--success-bg);color:var(--success);}
+  .badge-danger{background:var(--danger-bg);color:var(--danger);}
+  .badge-neutral{background:var(--surface-2);color:var(--muted);border:1px solid var(--border);}
+
+  .bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .bar-row .bar-label{width:90px;flex-shrink:0;font-size:13px;color:var(--ink-soft);font-weight:600;}
+  .bar-track{flex:1;height:10px;background:var(--surface-2);border-radius:100px;overflow:hidden;}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#7CB4F2);border-radius:100px;}
+  .bar-value{width:48px;text-align:right;font-size:13px;font-weight:700;}
+
+  .checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .chip-check{display:flex;align-items:center;gap:8px;padding:9px 11px;border:1.5px solid var(--border);border-radius:12px;font-size:13.5px;background:var(--surface-2);font-weight:600;}
+  .chip-check input{width:15px;height:15px;accent-color:var(--accent);}
+
+  .toast{position:fixed;top:20px;right:20px;background:var(--ink);color:#fff;padding:13px 18px;border-radius:14px;box-shadow:var(--shadow);font-size:14px;z-index:1000;opacity:0;transform:translateY(-8px);transition:all .25s;font-weight:600;}
+  .toast.show{opacity:1;transform:translateY(0);}
+  .toast.err{background:var(--danger);}
+  .toast.ok{background:var(--success);}
+
+  .welcome-hero{background:linear-gradient(135deg,var(--accent) 0%, var(--accent-dark) 100%);color:#fff;border-radius:24px;padding:44px 40px;position:relative;overflow:hidden;margin-bottom:24px;}
+  .welcome-hero::after{content:"";position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.35) 0%, transparent 70%);}
+  .welcome-hero .eyebrow{font-size:12.5px;text-transform:uppercase;letter-spacing:.1em;color:#EAF2FE;font-weight:700;margin-bottom:10px;}
+  .welcome-hero h1{font-size:34px;margin:0 0 10px;position:relative;z-index:1;}
+  .welcome-hero .msg{font-size:15.5px;color:#EAF2FE;max-width:520px;line-height:1.6;position:relative;z-index:1;font-weight:500;}
+  .welcome-hero .devise-box{margin-top:16px;padding:14px 18px;background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.25);border-radius:14px;max-width:560px;position:relative;z-index:1;font-size:14px;font-style:italic;}
+  .welcome-hero .devise-label{font-style:normal;font-weight:800;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:#EAF2FE;display:block;margin-bottom:4px;}
+  .welcome-hero .date-num{font-family:'Manrope',sans-serif;font-size:52px;font-weight:800;position:absolute;right:38px;bottom:20px;color:rgba(255,255,255,0.18);}
+
+  .quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  @media(max-width:900px){.quick-grid{grid-template-columns:repeat(2,1fr);}}
+  .quick-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;cursor:pointer;transition:border-color .15s, transform .1s, box-shadow .15s;}
+  .quick-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow);}
+  .quick-card .qicon{width:30px;height:30px;color:var(--accent);margin-bottom:10px;}
+  .quick-card h4{margin:0 0 3px;font-size:14.5px;font-weight:800;}
+  .quick-card p{margin:0;font-size:12px;color:var(--muted);font-weight:500;}
+
+  .link-list{display:flex;flex-direction:column;gap:10px;}
+  .link-item{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;gap:12px;flex-wrap:wrap;}
+  .link-item .lbl{font-weight:700;font-size:14px;}
+  .link-item .sub{color:var(--muted);font-size:12px;}
+  .link-item .actions{display:flex;gap:8px;align-items:center;}
+  .toggle-switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;user-select:none;}
+  .toggle-switch .track{width:44px;height:25px;border-radius:100px;background:var(--border);position:relative;transition:background .18s;flex-shrink:0;}
+  .toggle-switch .track::after{content:"";position:absolute;top:2.5px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.25);transition:transform .18s;}
+  .toggle-switch.on .track{background:var(--success);}
+  .toggle-switch.on .track::after{transform:translateX(19px);}
+  .toggle-switch .lbl{font-size:12.5px;font-weight:700;color:var(--ink-soft);}
+  .toggle-switch.on .lbl{color:var(--success);}
+
+  .empty-state{text-align:center;padding:40px 20px;color:var(--muted);}
+  .empty-state svg{width:36px;height:36px;margin-bottom:10px;opacity:.5;}
+
+  .goal-card{border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;background:var(--surface-2);}
+  .goal-card .gtitle{font-weight:600;font-size:15px;margin-bottom:4px;}
+  .goal-card .gmeta{font-size:12.5px;color:var(--muted);margin-bottom:12px;}
+  .goal-fact-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  .goal-fact-row input{flex:1;min-width:140px;}
+  .goal-stats-row{display:flex;gap:16px;font-size:12.5px;color:var(--muted);margin-bottom:8px;}
+  .goal-stats-row b{color:var(--ink);}
+
+  .phone-group{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:9px;overflow:hidden;background:var(--surface-2);}
+  .phone-group .prefix{padding:11px 10px;font-weight:600;color:var(--ink-soft);border-right:1.5px solid var(--border);background:var(--accent-soft);}
+  .phone-group input{border:none;background:transparent;padding:11px 10px;flex:1;outline:none;}
+
+  .subject-bind-label{font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px;}
+
+  .month-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+  .month-tab{padding:9px 18px;border-radius:var(--radius-pill);border:1.5px solid var(--border);background:var(--surface);font-size:13.5px;font-weight:700;color:var(--ink-soft);}
+  .month-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 6px 14px rgba(74,143,231,0.3);}
+
+  .multi-select-box{border:1.5px solid var(--border);border-radius:12px;background:var(--surface-2);max-height:220px;overflow-y:auto;padding:8px;}
+  .multi-select-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;font-size:13.5px;font-weight:600;}
+  .multi-select-item:hover{background:var(--surface);}
+
+  .curator-overview-row{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border:1px solid var(--border);border-radius:14px;background:var(--surface-2);margin-bottom:8px;cursor:pointer;}
+  .curator-overview-row:hover{border-color:var(--accent);}
+  .curator-overview-row .cname{font-weight:700;font-size:14px;}
+  .curator-overview-row .cmeta{font-size:12px;color:var(--muted);}
+  .detail-panel{border:1.5px dashed var(--accent);border-radius:14px;padding:16px;background:#fff;margin:-4px 0 12px;}
+
+  .goal-row-builder{display:grid;grid-template-columns:1.6fr 1fr 1fr 0.8fr 0.8fr 0.7fr auto;gap:8px;align-items:center;margin-bottom:8px;}
+  .goal-row-builder input, .goal-row-builder select{padding:9px;font-size:13px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface-2);}
+  @media(max-width:1100px){.goal-row-builder{grid-template-columns:1fr 1fr;}}
+
+  .hidden{display:none !important;}
+  .section{display:none;}
+  .section.active{display:block;}
+
+  ::-webkit-scrollbar{width:9px;height:9px;}
+  ::-webkit-scrollbar-thumb{background:#CBD8EF;border-radius:8px;}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-mark"><div class="word">КУРАТОР</div><div class="sub">Күнделік — Отчет</div></div>
+    <h1>Авторизация</h1>
+    <p class="sub">Қош келдіңіз! Кіру үшін админ берген аты-жөні мен парольді енгізіңіз.</p>
+    <div class="login-error" id="login-error"></div>
+    <div class="field"><label>Аты-жөні</label><input type="text" id="login-name" placeholder="Мысалы: Айгерім Серікова" autocomplete="username"></div>
+    <div class="field"><label>Пароль</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="btn btn-primary" onclick="doLogin()">Кіру</button>
+  </div>
+</div>
+<div class="config-warning hidden" id="config-warning">
+  ⚠️ CONFIG.API_URL орнатылмаған — сайт әзірге демо режимде. index.html файлындағы CONFIG.API_URL мәнін Apps Script Web App сілтемесіне ауыстырыңыз.
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app">
+  <div class="shell">
+    <div class="sidebar">
+      <div class="brand">
+        <div class="mark">К</div>
+        <div><div class="name">Куратор</div><div class="role" id="sidebar-user">—</div></div>
+      </div>
+      <div id="nav-curator">
+        <div class="nav-group-label">Негізгі</div>
+        <div class="nav-item" data-section="welcome">🏠<span> Басты бет</span></div>
+        <div class="nav-group-label">Күнделікті</div>
+        <div class="nav-item" data-section="students">👥<span> Жалпы оқушы саны</span></div>
+        <div class="nav-item" data-section="performance">📈<span> Өнімділігім</span></div>
+        <div class="nav-item" data-section="strecords">🎙️<span> СТ жазбасын салу</span></div>
+        <div class="nav-item" data-section="outgoing">🚪<span> Шығатын оқушы есебі</span></div>
+        <div class="nav-group-label">Рейтинг</div>
+        <div class="nav-item" data-section="rating-general">🏆<span> Жалпы рейтинг</span></div>
+        <div class="nav-item" data-section="rating-st">🏅<span> СТ рейтинг</span></div>
+      </div>
+      <div id="nav-admin" class="hidden">
+        <div class="nav-group-label">Админ панелі</div>
+        <div class="nav-item" data-section="admin-users">🧑‍🤝‍🧑<span> Кураторлар тізімі</span></div>
+        <div class="nav-item" data-section="admin-performance">📊<span> Өнімділік енгізу</span></div>
+        <div class="nav-group-label">Кестелер</div>
+        <div class="nav-item" data-section="admin-students-overview">👥<span> Оқушы сандары</span></div>
+        <div class="nav-item" data-section="admin-st-overview">🎙️<span> СТ жазбалары</span></div>
+        <div class="nav-item" data-section="admin-outgoing-overview">🚪<span> Шығатын оқушылар</span></div>
+        <div class="nav-group-label">Рейтинг</div>
+        <div class="nav-item" data-section="admin-links">🔗<span> Апталық сілтемелер</span></div>
+      </div>
+      <div id="nav-coordinator" class="hidden">
+        <div class="nav-group-label">Координатор панелі</div>
+        <div class="nav-item" data-section="coord-students-overview">👥<span> Оқушы сандары</span></div>
+        <div class="nav-item" data-section="coord-st-overview">🎙️<span> СТ жазбалары</span></div>
+        <div class="nav-item" data-section="coord-outgoing-overview">🚪<span> Шығатын оқушылар</span></div>
+      </div>
+      <div class="sidebar-footer"><button class="logout-btn" onclick="doLogout()">Шығу</button></div>
+    </div>
+
+    <div class="main">
+
+      <!-- WELCOME -->
+      <div class="section" id="section-welcome">
+        <div class="welcome-hero">
+          <div class="eyebrow" id="welcome-date-full">—</div>
+          <h1>Қош келдіңіз, <span id="welcome-name">Куратор</span>! 👋</h1>
+          <p class="msg">Бүгінгі жұмыс күніңізге сәттілік тілейміз! Барлық отчеттарды сол сайттың өзінен, дәл уақытында толтырсаңыз — деректер бірден тиісті кестелерге түседі.</p>
+          <div class="devise-box" id="devise-box"><span class="devise-label">Бүгінгі күнге сіздің девизіңіз:</span> <span id="devise-text"></span></div>
+          <div class="date-num" id="welcome-day-num">01</div>
+        </div>
+        <div class="quick-grid">
+          <div class="quick-card" onclick="goTo('students')"><div class="qicon">👥</div><h4>Оқушы саны</h4><p>Бүгінгі санды енгізу</p></div>
+          <div class="quick-card" onclick="goTo('strecords')"><div class="qicon">🎙️</div><h4>СТ жазбасын салу</h4><p>Жазба сілтемесін тіркеу</p></div>
+          <div class="quick-card" onclick="goTo('outgoing')"><div class="qicon">🚪</div><h4>Шығатын оқушы</h4><p>Толық анкета</p></div>
+          <div class="quick-card" onclick="goTo('rating-general')"><div class="qicon">🏆</div><h4>Жалпы рейтинг</h4><p>Апталық кестелер</p></div>
+        </div>
+      </div>
+
+      <!-- 1. STUDENTS -->
+      <div class="section" id="section-students">
+        <div class="page-title"><div><h2>Жалпы оқушы саны</h2><div class="desc">Күн сайын өз тобыңыздағы жалпы оқушы санын енгізіңіз.</div></div></div>
+        <div class="card">
+          <h3>Бүгінгі санды енгізу</h3>
+          <div class="grid-2">
+            <div class="field"><label>Күні</label><input type="date" id="sc-date"></div>
+            <div class="field"><label>Оқушы саны</label><input type="number" id="sc-count" min="0" placeholder="Мысалы: 24"></div>
+          </div>
+          <button class="btn btn-accent" onclick="submitStudentCount()">Сақтау</button>
+        </div>
+        <div class="card"><h3>Апта бойынша жиынтық</h3><div id="sc-weekly"></div></div>
+        <div class="card"><h3>Менің тарихым</h3><div id="sc-history"></div></div>
+      </div>
+
+      <!-- 2. PERFORMANCE (view only) -->
+      <div class="section" id="section-performance">
+        <div class="page-title"><div><h2>Өнімділігім</h2><div class="desc">Апта бойынша орташа өнімділік көрсеткіштеріңіз.</div></div></div>
+        <div class="card"><h3>Апта бойынша</h3><div id="perf-weekly"></div></div>
+        <div class="card"><h3>Соңғы күндер</h3><div id="perf-list"></div></div>
+      </div>
+
+      <!-- 3. ST RECORD -->
+      <div class="section" id="section-strecords">
+        <div class="page-title"><div><h2>СТ жазбасын салу</h2><div class="desc">Сабақ жазбаңызды және отслежка сілтемесін тіркеңіз.</div></div></div>
+        <div class="card">
+          <h3>Жаңа жазба қосу</h3>
+          <div class="grid-2">
+            <div class="field"><label>Күні</label><input type="date" id="st-date"></div>
+            <div class="field"><label>Тапсырған оқушы саны</label><input type="number" id="st-submitted-count" min="0" placeholder="Мысалы: 12"></div>
+          </div>
+          <div class="field"><label>Жазба сілтемесі</label><input type="url" id="st-record-link" placeholder="https://..."></div>
+          <div class="field"><label>Отслежка сілтемесі</label><input type="url" id="st-tracking-link" placeholder="https://..."></div>
+          <div class="field"><label>Ескеру керек жағдайлар</label><textarea id="st-notes" rows="3" placeholder="Болмаса, бос қалдырыңыз"></textarea></div>
+          <button class="btn btn-accent" onclick="submitSTRecord()">Сақтау</button>
+        </div>
+        <div class="card"><h3>Тіркелген жазбалар</h3><div id="st-history"></div></div>
+      </div>
+
+      <!-- 4. OUTGOING REPORT -->
+      <div class="section" id="section-outgoing">
+        <div class="page-title"><div><h2>Шығатын оқушы есебі</h2><div class="desc">Толтырылған соң, дерек автоматты түрде админнің кестесіне түседі.</div></div></div>
+        <div class="card">
+          <h3>Оқушы туралы жалпы ақпарат</h3>
+          <div class="grid-3">
+            <div class="field"><label>Күні</label><input type="date" id="or-date"></div>
+            <div class="field"><label>Аты-жөні</label><input type="text" id="or-fullname"></div>
+            <div class="field"><label>Таңдау пән</label><select id="or-chosen"></select></div>
+          </div>
+          <div class="grid-3">
+            <div class="field"><label>Почта</label><input type="email" id="or-email"></div>
+            <div class="field"><label>Оқушы номері</label>
+              <div class="phone-group"><span class="prefix">+7</span><input type="tel" id="or-phone" maxlength="10" placeholder="7071234567" inputmode="numeric"></div>
+            </div>
+            <div class="field"><label>Ата-ана номері</label>
+              <div class="phone-group"><span class="prefix">+7</span><input type="tel" id="or-parent-phone" maxlength="10" placeholder="7071234567" inputmode="numeric"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Қатысатын пәндер</h3>
+          <div class="grid-2">
+            <div class="field"><label>1-пән</label><select id="or-attend1" class="attend-select" data-idx="1"></select></div>
+            <div class="field"><label>2-пән</label><select id="or-attend2" class="attend-select" data-idx="2"></select></div>
+            <div class="field"><label>3-пән</label><select id="or-attend3" class="attend-select" data-idx="3"></select></div>
+            <div class="field"><label>4-пән</label><select id="or-attend4" class="attend-select" data-idx="4"></select></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Шығатын пәндер</h3>
+          <div class="grid-2">
+            <div class="field"><label>1-пән</label><select id="or-leave1" class="leave-select"></select></div>
+            <div class="field"><label>2-пән</label><select id="or-leave2" class="leave-select"></select></div>
+            <div class="field"><label>3-пән</label><select id="or-leave3" class="leave-select"></select></div>
+            <div class="field"><label>4-пән</label><select id="or-leave4" class="leave-select"></select></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>ПС / ВС мұғалімдері</h3>
+          <p class="card-sub">Әр мұғалім өрісі жоғарыда таңдалған қатысатын пәнмен автоматты байланысады.</p>
+          <div class="grid-2">
+            <div class="field"><div class="subject-bind-label" id="bind-t1ps">1-ПС мұғалім (пән таңдалмаған)</div><input type="text" id="or-t1ps" placeholder="Мұғалімнің аты-жөні"></div>
+            <div class="field"><div class="subject-bind-label" id="bind-t1vs">1-ВС мұғалім (пән таңдалмаған)</div><input type="text" id="or-t1vs" placeholder="Мұғалімнің аты-жөні"></div>
+            <div class="field"><div class="subject-bind-label" id="bind-t2ps">2-ПС мұғалім (пән таңдалмаған)</div><input type="text" id="or-t2ps" placeholder="Мұғалімнің аты-жөні"></div>
+            <div class="field"><div class="subject-bind-label" id="bind-t2vs">2-ВС мұғалім (пән таңдалмаған)</div><input type="text" id="or-t2vs" placeholder="Мұғалімнің аты-жөні"></div>
+            <div class="field"><div class="subject-bind-label" id="bind-t3ps">3-ПС мұғалім (пән таңдалмаған)</div><input type="text" id="or-t3ps" placeholder="Мұғалімнің аты-жөні"></div>
+            <div class="field"><div class="subject-bind-label" id="bind-t3vs">3-ВС мұғалім (пән таңдалмаған)</div><input type="text" id="or-t3vs" placeholder="Мұғалімнің аты-жөні"></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Қорытынды баға</h3>
+          <div class="grid-2">
+            <div class="field"><label>Шығу себебі</label>
+              <select id="or-reason">
+                <option>Үлгермеу</option><option>Денсаулық жағдайы</option><option>Отбасылық жағдай</option>
+                <option>Қаржылық жағдай</option><option>Басқа курсқа кету</option><option>Пәнін ауыстырды</option>
+                <option>ҰБТ тапсырмайды</option><option>IELTS / шет тіл</option><option>Мектеп жүктемесі</option>
+                <option>Өзі дайындалады</option><option>Басқа себеп</option>
+              </select>
+            </div>
+            <div class="field"><label>Толық / Толық емес</label><select id="or-fullness"><option>Толық</option><option>Толық емес</option></select></div>
+            <div class="field"><label>Нақты шыға ма?</label><select id="or-reallyleaving"><option>Иә</option><option>Жоқ</option></select></div>
+            <div class="field"><label>Деңгейі</label><select id="or-level"><option>-</option><option>Жақсы</option><option>Орташа</option><option>Нашар</option></select></div>
+          </div>
+          <div class="field">
+            <label>Характеристика</label>
+            <div class="checkbox-grid" id="or-characteristics">
+              <label class="chip-check"><input type="checkbox" value="Белсенді"> Белсенді</label>
+              <label class="chip-check"><input type="checkbox" value="Жауапты"> Жауапты</label>
+              <label class="chip-check"><input type="checkbox" value="Ұқыпты"> Ұқыпты</label>
+              <label class="chip-check"><input type="checkbox" value="Еңбекқор"> Еңбекқор</label>
+              <label class="chip-check"><input type="checkbox" value="Жауапсыз"> Жауапсыз</label>
+              <label class="chip-check"><input type="checkbox" value="Немқұрайды"> Немқұрайды</label>
+              <label class="chip-check"><input type="checkbox" value="Пассивті"> Пассивті</label>
+              <label class="chip-check"><input type="checkbox" value="Коммуникабельді"> Коммуникабельді</label>
+            </div>
+          </div>
+          <button class="btn btn-accent" onclick="submitOutgoingReport()">Есепті жіберу</button>
+        </div>
+      </div>
+
+      <!-- 6. RATING GENERAL -->
+      <div class="section" id="section-rating-general">
+        <div class="page-title"><div><h2>Апта сайынғы ЖАЛПЫ РЕЙТИНГ drive сілтемелері</h2><div class="desc">Аптаны таңдап, тиісті кестеге сілтеме бойынша өтіңіз.</div></div></div>
+        <div class="card">
+          <div class="field"><label>Апта</label><select id="rg-week-select" onchange="renderRatingList('general')"></select></div>
+        </div>
+        <div class="card"><div class="link-list" id="rating-general-list"></div></div>
+      </div>
+
+      <!-- 7. RATING ST -->
+      <div class="section" id="section-rating-st">
+        <div class="page-title"><div><h2>Апта сайынғы СТ РЕЙТИНГ drive сілтемелері</h2><div class="desc">Аптаны таңдап, тиісті кестеге сілтеме бойынша өтіңіз.</div></div></div>
+        <div class="card">
+          <div class="field"><label>Апта</label><select id="rst-week-select" onchange="renderRatingList('st')"></select></div>
+        </div>
+        <div class="card"><div class="link-list" id="rating-st-list"></div></div>
+      </div>
+
+      <!-- ADMIN: USERS -->
+      <div class="section" id="section-admin-users">
+        <div class="page-title"><div><h2>Кураторлар тізімі</h2><div class="desc">Жаңа куратор қосыңыз немесе қолданыстағыны басқарыңыз.</div></div></div>
+        <div class="card">
+          <h3>Жаңа қолданушы қосу</h3>
+          <div class="grid-3">
+            <div class="field"><label>Аты-жөні</label><input type="text" id="au-name"></div>
+            <div class="field"><label>Пароль</label><input type="text" id="au-pass"></div>
+            <div class="field"><label>Рөлі</label><select id="au-role"><option value="curator">Куратор</option><option value="coordinator">Координатор</option><option value="admin">Админ</option></select></div>
+          </div>
+          <div class="field"><label>Координатор (куратор үшін — қай координаторға бағынады)</label><select id="au-okr"><option value="">— таңдамаған —</option></select></div>
+          <button class="btn btn-accent" onclick="submitAddUser()">Қосу</button>
+        </div>
+        <div class="card">
+          <h3>Барлық қолданушылар</h3>
+          <table><thead><tr><th>Аты-жөні</th><th>Рөлі</th><th>Координатор</th><th></th></tr></thead><tbody id="au-table"></tbody></table>
+        </div>
+      </div>
+
+      <!-- ADMIN: PERFORMANCE -->
+      <div class="section" id="section-admin-performance">
+        <div class="page-title"><div><h2>Өнімділік енгізу</h2><div class="desc">Бір немесе бірнеше куратордың өнімділік пайызын бір уақытта енгізіңіз.</div></div></div>
+        <div class="card">
+          <div class="grid-2">
+            <div class="field"><label>Күні</label><input type="date" id="ap-date"></div>
+            <div class="field"><label>Пайыз (%)</label><input type="number" id="ap-percent" min="0" max="100"></div>
+          </div>
+          <div class="field">
+            <label>Кураторлар</label>
+            <div class="month-tabs" id="ap-coord-filter"></div>
+            <div class="chip-check" style="margin-bottom:8px;"><input type="checkbox" id="ap-select-all" onchange="toggleAllCurators()"> <b>Барлық кураторды таңдау</b></div>
+            <div class="multi-select-box" id="ap-curator-list"></div>
+          </div>
+          <button class="btn btn-accent" onclick="submitAdminPerformance()">Сақтау</button>
+        </div>
+      </div>
+
+      <!-- ADMIN: STUDENTS OVERVIEW -->
+      <div class="section" id="section-admin-students-overview">
+        <div class="page-title"><div><h2>Оқушы сандары</h2><div class="desc">Кураторлар күнделікті енгізген жалпы оқушы саны — барлығы бір кестеде.</div></div></div>
+        <div class="month-tabs" id="asov-coord-filter"></div>
+        <div class="card"><div id="admin-students-table"></div></div>
+      </div>
+
+      <!-- ADMIN: ST RECORDS OVERVIEW -->
+      <div class="section" id="section-admin-st-overview">
+        <div class="page-title"><div><h2>СТ жазбалары</h2><div class="desc">Кураторлар тіркеген СТ жазба сілтемелері — барлығы бір кестеде.</div></div></div>
+        <div class="month-tabs" id="astv-coord-filter"></div>
+        <div class="card"><div id="admin-st-table"></div></div>
+      </div>
+
+      <!-- ADMIN: OUTGOING REPORTS OVERVIEW -->
+      <div class="section" id="section-admin-outgoing-overview">
+        <div class="page-title"><div><h2>Шығатын оқушылар</h2><div class="desc">Кураторлар жіберген шығатын оқушы есептері — барлығы бір кестеде.</div></div></div>
+        <div class="month-tabs" id="aov-coord-filter"></div>
+        <div class="card"><div id="admin-outgoing-table" style="overflow-x:auto;"></div></div>
+      </div>
+
+      <!-- ADMIN: LINKS -->
+      <div class="section" id="section-admin-links">
+        <div class="page-title"><div><h2>Апталық сілтемелер</h2><div class="desc">Жалпы және СТ рейтинг үшін Drive сілтемелерін қосыңыз.</div></div></div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Жалпы рейтинг</h3>
+            <div class="field"><label>Ай-апта</label><select id="al-gen-week"></select></div>
+            <div class="field"><label>Drive сілтемесі</label><input type="url" id="al-gen-link" placeholder="https://drive.google.com/..."></div>
+            <button class="btn btn-accent btn-sm" onclick="submitAdminLink('general')">Сақтау</button>
+          </div>
+          <div class="card">
+            <h3>СТ рейтинг</h3>
+            <div class="field"><label>Ай-апта</label><select id="al-st-week"></select></div>
+            <div class="field"><label>Drive сілтемесі</label><input type="url" id="al-st-link" placeholder="https://drive.google.com/..."></div>
+            <button class="btn btn-accent btn-sm" onclick="submitAdminLink('st')">Сақтау</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Сілтемелер жинағы</h3>
+          <p class="card-sub">Жалпы және СТ рейтинг үшін қосылған барлық сілтемелер тізімі.</p>
+          <div id="admin-links-collection"></div>
+        </div>
+      </div>
+
+      <!-- COORDINATOR: STUDENTS OVERVIEW -->
+      <div class="section" id="section-coord-students-overview">
+        <div class="page-title"><div><h2>Оқушы сандары</h2><div class="desc">Сіздің кураторларыңыз енгізген жалпы оқушы саны.</div></div></div>
+        <div class="card"><div id="coord-students-table"></div></div>
+      </div>
+
+      <!-- COORDINATOR: ST RECORDS OVERVIEW -->
+      <div class="section" id="section-coord-st-overview">
+        <div class="page-title"><div><h2>СТ жазбалары</h2><div class="desc">Сіздің кураторларыңыз тіркеген СТ жазба сілтемелері.</div></div></div>
+        <div class="card"><div id="coord-st-table"></div></div>
+      </div>
+
+      <!-- COORDINATOR: OUTGOING REPORTS OVERVIEW -->
+      <div class="section" id="section-coord-outgoing-overview">
+        <div class="page-title"><div><h2>Шығатын оқушылар</h2><div class="desc">Сіздің кураторларыңыз жіберген шығатын оқушы есептері.</div></div></div>
+        <div class="card"><div id="coord-outgoing-table" style="overflow-x:auto;"></div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =============== CONFIG =============== */
+const CONFIG = { API_URL: 'https://script.google.com/macros/s/AKfycbzsuJukZwpRUJ7wOM8kQM4sLvo0rUUFJBYjFQ_JB6-S5ISUtGAQvz45CWlUBWA1c_tT/exec' };
+const DEMO_MODE = CONFIG.API_URL.indexOf('PASTE_YOUR') !== -1;
+if (DEMO_MODE) document.getElementById('config-warning').classList.remove('hidden');
+
+/* =============== CONSTANTS =============== */
+const WEEKDAYS_KK = ['Жексенбі','Дүйсенбі','Сейсенбі','Сәрсенбі','Бейсенбі','Жұма','Сенбі'];
+const MONTHS_KK = ['қаңтар','ақпан','наурыз','сәуір','мамыр','маусым','шілде','тамыз','қыркүйек','қазан','қараша','желтоқсан'];
+const CHOSEN_SUBJECTS = ['ДЖТАНГЛ','ФИЗМАТ','ФИЗХИМ','ГЕОБИО','ГЕОАНГЛ','ГЕОДЖТ','ДЖТҚҰҚЫҚ','ӘДЕБТІЛ','РУСЛИТ','ГЕОМАТ','БИОХИМ','ИНФОМАТ','ШЫҒАРМАШЫЛЫҚ'];
+const ALL_SUBJECTS = ['Қазақстан тарихы','Математикалық сауаттылық','Оқу сауаттылығы','Математика','Физика','Химия','Биология','Геометрия','География','Дүниежүзі тарихы','Құқық негіздері','Ағылшын тілі','Қазақ тілі мен әдебиеті','Орыс тілі мен әдебиеті','Информатика','Графика және жобалау','Шығармашылық'];
+function weekOptions(){
+  const opts = [];
+  for(let m=1;m<=5;m++) for(let w=1;w<=4;w++) opts.push(`${m}-ай ${w}-апта`);
+  return opts;
+}
+const WEEK_OPTIONS = weekOptions();
+
+// Нақты күнтізбелік апталар (әзірге тек 1-ай белгілі; кейін осы тізімге
+// келесі айлардың даталарын қосу арқылы кеңейтуге болады)
+const WEEK_RANGES = [
+  {label:'1-ай 1-апта', start:'2026-07-01', end:'2026-07-11'},
+  {label:'1-ай 2-апта', start:'2026-07-13', end:'2026-07-18'},
+  {label:'1-ай 3-апта', start:'2026-07-20', end:'2026-07-25'},
+  {label:'1-ай 4-апта', start:'2026-07-27', end:'2026-08-01'},
+];
+function getWeekLabelForDate(dateStr){
+  if(!dateStr) return null;
+  const d = String(dateStr).slice(0,10);
+  for(const w of WEEK_RANGES){ if(d >= w.start && d <= w.end) return w.label; }
+  return null;
+}
+// Дата жолын ('2026-07-03' немесе ISO) адамға түсінікті "3 шілде 2026 жыл" пішініне келтіреді
+function formatDateKZ(raw){
+  if(!raw) return '—';
+  const s = String(raw).slice(0,10);
+  const parts = s.split('-');
+  if(parts.length!==3) return s;
+  const [y,m,day] = parts;
+  const mi = Number(m)-1;
+  if(mi<0||mi>11||isNaN(Number(day))) return s;
+  return `${Number(day)} ${MONTHS_KK[mi]} ${y} жыл`;
+}
+
+const MOTIVATIONAL_QUOTES = [
+  'Кішкентай қадам — үлкен жетістіктің басы!',
+  'Бүгін жасаған еңбегің — ертеңгі табысыңның кепілі.',
+  'Әр оқушының жүрегіне жол тап — сол сенің ең үлкен жеңісің.',
+  'Шаршама, сен жасап жатқан іс мәңгілікке қалады.',
+  'Сенің қамқорлығың — біреудің болашағын өзгертеді.',
+  'Бүгінгі тер — ертеңгі мақтаныш.',
+  'Кішкентай жетістіктерді де тойла — олар үлкен жолдың бөлігі.',
+  'Сен әлі білмейтін күшің бар — оны әр күн сайын аш.',
+  'Табандылық — талантты жеңетін жалғыз қасиет.',
+  'Әр қиындық — сені мықтырақ ететін сабақ.',
+  'Оқушыларыңның сенімі — ең қымбат сыйың.',
+  'Бүгін бір адамның күнін жарқын ете аласың — қолыңнан келеді!',
+  'Ұйқыңды төле, арманыңды өтте — жарқын болашақ күтіп тұр.',
+  'Сенің еңбегің көрінбесе де, нәтижесі әрқашан көрінеді.',
+  'Кез келген үлкен нәтиже кішкентай әдеттерден басталады.',
+  'Бүгін жасаған жақсылығың ертең қайтадан саған оралады.',
+  'Мықты болу — түсіп қалмау емес, әр түскен сайын тұру.',
+  'Сенің сенімің — оқушыңның қанаты.',
+  'Ең үлкен жеңіс — кешегі өзіңнен жақсы болу.',
+  'Бүгінгі жұмысың — ертеңгі кемел ұрпақтың негізі.'
+];
+function getTodayQuote(){
+  const start = new Date(new Date().getFullYear(), 0, 0);
+  const diff = new Date() - start;
+  const dayOfYear = Math.floor(diff / (1000*60*60*24));
+  return MOTIVATIONAL_QUOTES[dayOfYear % MOTIVATIONAL_QUOTES.length];
+}
+
+/* =============== STATE =============== */
+let CURRENT_USER = null;
+let RATING_LINKS_CACHE = { general: [], st: [] };
+let RATING_CONFIRMED_CACHE = { general: [], st: [] };
+
+/* =============== API HELPER =============== */
+async function api(action, data) {
+  if (DEMO_MODE) return demoApi(action, data);
+  return new Promise((resolve) => {
+    const cbName = 'cb_' + Math.random().toString(36).slice(2) + Date.now();
+    const url = CONFIG.API_URL + '?action=' + encodeURIComponent(action) + '&data=' + encodeURIComponent(JSON.stringify(data || {})) + '&callback=' + cbName;
+    const script = document.createElement('script');
+    let finished = false;
+    const cleanup = () => { try { delete window[cbName]; } catch(e){} if (script.parentNode) script.parentNode.removeChild(script); };
+    window[cbName] = (result) => { finished = true; cleanup(); resolve(result); };
+    script.onerror = () => {
+      if (!finished) { finished = true; cleanup(); showToast('Желі қатесі: серверге қосыла алмады', 'err'); resolve({success:false, error:'JSONP load error'}); }
+    };
+    script.src = url;
+    document.body.appendChild(script);
+    setTimeout(() => {
+      if (!finished) { finished = true; cleanup(); showToast('Уақыт бітті — қайта көріңіз', 'err'); resolve({success:false, error:'timeout'}); }
+    }, 15000);
+  });
+}
+
+/* ---- DEMO (in-memory) fallback ---- */
+const DEMO_DB = {
+  users:[
+    {name:'admin', password:'admin123', role:'admin', coordinator:''},
+    {name:'Дамир', password:'2025', role:'coordinator', coordinator:'Дамир'},
+    {name:'нұрғазы', password:'6305', role:'curator', coordinator:'Балауса'}
+  ],
+  studentCounts:[{date:'2026-07-01', weekday:'Сәрсенбі', name:'нұрғазы', count:22}],
+  performance:[], stRecords:[], outgoingReports:[],
+  linksGeneral:[{weekLabel:'1-ай 1-апта', link:'https://drive.google.com/demo1'}], linksST:[], confirmGeneral:[], confirmST:[]
+};
+function demoApi(action, data){
+  switch(action){
+    case 'login': {
+      const u = DEMO_DB.users.find(u=>u.name===data.name && u.password===data.password);
+      return u ? {success:true, user:{name:u.name, role:u.role, coordinator:u.coordinator}} : {success:false, error:'Аты-жөні немесе пароль қате. (Демо: admin/admin123, Дамир/2025 немесе нұрғазы/6305)'};
+    }
+    case 'adminListUsers': return {success:true, users:DEMO_DB.users};
+    case 'adminAddUser': DEMO_DB.users.push({name:data.name,password:data.password,role:data.role,coordinator:data.coordinator}); return {success:true};
+    case 'adminDeleteUser': DEMO_DB.users = DEMO_DB.users.filter(u=>u.name!==data.name); return {success:true};
+    case 'saveStudentCount': DEMO_DB.studentCounts.push(data); return {success:true};
+    case 'getMyStudentCounts': return {success:true, records: DEMO_DB.studentCounts.filter(r=>r.name===data.name).map(r=>({date:r.date, weekday:r.weekday, count:r.count}))};
+    case 'adminGetAllStudentCounts': return {success:true, records: [...DEMO_DB.studentCounts].reverse()};
+    case 'adminSavePerformance': { const names = data.names||[data.name]; names.forEach(n=>DEMO_DB.performance.push({name:n,date:data.date,percent:data.percent})); return {success:true}; }
+    case 'getMyPerformance': return {success:true, records: DEMO_DB.performance.filter(r=>r.name===data.name).map(r=>({date:r.date, percent:r.percent}))};
+    case 'saveSTRecord': DEMO_DB.stRecords.push(data); return {success:true};
+    case 'getMySTRecords': return {success:true, records: DEMO_DB.stRecords.filter(r=>r.name===data.name)};
+    case 'adminGetAllSTRecords': return {success:true, records: [...DEMO_DB.stRecords].reverse()};
+    case 'saveOutgoingReport': DEMO_DB.outgoingReports.push(Object.assign({}, data, {name:data.curatorName})); return {success:true};
+    case 'adminGetAllOutgoingReports': return {success:true, records: [...DEMO_DB.outgoingReports].reverse()};
+    case 'adminSaveWeeklyLink': {
+      const arr = data.type==='st'?DEMO_DB.linksST:DEMO_DB.linksGeneral;
+      const ex = arr.find(l=>l.weekLabel===data.weekLabel);
+      if(ex) ex.link=data.link; else arr.push({weekLabel:data.weekLabel, link:data.link});
+      return {success:true};
+    }
+    case 'getWeeklyLinks': return {success:true, links:[...(data.type==='st'?DEMO_DB.linksST:DEMO_DB.linksGeneral)].reverse()};
+    case 'confirmWeeklyLink': { const arr = data.type==='st'?DEMO_DB.confirmST:DEMO_DB.confirmGeneral; arr.push({name:data.name, weekLabel:data.weekLabel}); return {success:true}; }
+    case 'getMyWeeklyConfirmations': { const arr = data.type==='st'?DEMO_DB.confirmST:DEMO_DB.confirmGeneral; return {success:true, confirmed: arr.filter(c=>c.name===data.name).map(c=>c.weekLabel)}; }
+    default: return {success:false, error:'Демо режимде қолжетімсіз әрекет'};
+  }
+}
+
+/* =============== TOAST =============== */
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type==='err' ? ' err' : type==='ok' ? ' ok' : '');
+  setTimeout(()=>{ t.classList.remove('show'); }, 3200);
+}
+
+/* =============== LOGIN / LOGOUT =============== */
+async function doLogin(){
+  const name = document.getElementById('login-name').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const errBox = document.getElementById('login-error');
+  errBox.style.display='none';
+  if(!name || !pass){ errBox.textContent='Аты-жөні мен парольді енгізіңіз.'; errBox.style.display='block'; return; }
+  const res = await api('login', {name, password:pass});
+  if(!res.success){ errBox.textContent = res.error || 'Кіру мүмкін болмады.'; errBox.style.display='block'; return; }
+  CURRENT_USER = res.user;
+  sessionStorage.setItem('curator_user', JSON.stringify(CURRENT_USER));
+  enterApp();
+}
+function doLogout(){
+  CURRENT_USER = null;
+  sessionStorage.removeItem('curator_user');
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-name').value='';
+  document.getElementById('login-pass').value='';
+}
+function tryRestoreSession(){
+  const raw = sessionStorage.getItem('curator_user');
+  if(raw){ CURRENT_USER = JSON.parse(raw); enterApp(); }
+}
+
+function enterApp(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  const roleLabel = CURRENT_USER.role==='admin' ? 'Админ' : (CURRENT_USER.role==='coordinator' ? 'Координатор' : 'Куратор');
+  document.getElementById('sidebar-user').textContent = CURRENT_USER.name + ' · ' + roleLabel;
+  document.getElementById('nav-curator').classList.toggle('hidden', CURRENT_USER.role!=='curator');
+  document.getElementById('nav-admin').classList.toggle('hidden', CURRENT_USER.role!=='admin');
+  document.getElementById('nav-coordinator').classList.toggle('hidden', CURRENT_USER.role!=='coordinator');
+  setDefaultDates();
+  populateSelects();
+  renderWelcome();
+  populateWeekSelects();
+  if(CURRENT_USER.role==='admin'){
+    goTo('admin-users');
+    loadAdminUsers(); loadCuratorListForPerformance();
+  } else if(CURRENT_USER.role==='coordinator'){
+    goTo('coord-students-overview');
+  } else {
+    goTo('welcome');
+  }
+}
+
+/* =============== NAV =============== */
+document.querySelectorAll('.nav-item').forEach(el=>{
+  el.addEventListener('click', ()=> goTo(el.dataset.section));
+});
+function goTo(section){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const target = document.getElementById('section-'+section);
+  if(target) target.classList.add('active');
+  const navItem = document.querySelector(`.nav-item[data-section="${section}"]`);
+  if(navItem) navItem.classList.add('active');
+
+  if(section==='students') loadStudentHistory();
+  if(section==='performance') loadPerformance();
+  if(section==='strecords') loadSTHistory();
+  if(section==='rating-general') loadWeeklyLinks('general');
+  if(section==='rating-st') loadWeeklyLinks('st');
+  if(section==='admin-users') loadAdminUsers();
+  if(section==='admin-students-overview') loadAdminStudentsOverview();
+  if(section==='admin-st-overview') loadAdminSTOverview();
+  if(section==='admin-outgoing-overview') loadAdminOutgoingOverview();
+  if(section==='admin-links') loadAdminLinksCollection();
+  if(section==='coord-students-overview') loadAdminStudentsOverview(CURRENT_USER.coordinator);
+  if(section==='coord-st-overview') loadAdminSTOverview(CURRENT_USER.coordinator);
+  if(section==='coord-outgoing-overview') loadAdminOutgoingOverview(CURRENT_USER.coordinator);
+}
+
+/* =============== WELCOME =============== */
+function renderWelcome(){
+  document.getElementById('welcome-name').textContent = CURRENT_USER.name;
+  const d = new Date();
+  document.getElementById('welcome-date-full').textContent = `${WEEKDAYS_KK[d.getDay()]}, ${d.getDate()} ${MONTHS_KK[d.getMonth()]} ${d.getFullYear()}`;
+  document.getElementById('welcome-day-num').textContent = String(d.getDate()).padStart(2,'0');
+  const deviseEl = document.getElementById('devise-text');
+  if(deviseEl) deviseEl.textContent = getTodayQuote();
+}
+function setDefaultDates(){
+  const today = new Date().toISOString().slice(0,10);
+  ['sc-date','st-date','or-date','ap-date'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value = today;
+  });
+}
+function populateSelects(){
+  const chosenSel = document.getElementById('or-chosen');
+  chosenSel.innerHTML = CHOSEN_SUBJECTS.map(s=>`<option value="${s}">${s}</option>`).join('');
+  document.querySelectorAll('.attend-select, .leave-select').forEach(sel=>{
+    sel.innerHTML = '<option value="">— таңдаңыз —</option>' + ALL_SUBJECTS.map(s=>`<option value="${s}">${s}</option>`).join('');
+  });
+  document.querySelectorAll('.attend-select').forEach(sel=>{
+    sel.addEventListener('change', ()=> updateTeacherBindings());
+  });
+}
+function updateTeacherBindings(){
+  const map = [
+    {attend:'or-attend1', ps:'or-t1ps', vs:'or-t1vs', bindPs:'bind-t1ps', bindVs:'bind-t1vs', num:'1'},
+    {attend:'or-attend2', ps:'or-t2ps', vs:'or-t2vs', bindPs:'bind-t2ps', bindVs:'bind-t2vs', num:'2'},
+    {attend:'or-attend3', ps:'or-t3ps', vs:'or-t3vs', bindPs:'bind-t3ps', bindVs:'bind-t3vs', num:'3'},
+  ];
+  map.forEach(m=>{
+    const subject = document.getElementById(m.attend).value;
+    document.getElementById(m.bindPs).textContent = subject ? `${m.num}-ПС мұғалім (${subject})` : `${m.num}-ПС мұғалім (пән таңдалмаған)`;
+    document.getElementById(m.bindVs).textContent = subject ? `${m.num}-ВС мұғалім (${subject})` : `${m.num}-ВС мұғалім (пән таңдалмаған)`;
+  });
+}
+function populateWeekSelects(){
+  ['rg-week-select','rst-week-select','al-gen-week','al-st-week'].forEach(id=>{
+    document.getElementById(id).innerHTML = WEEK_OPTIONS.map(w=>`<option value="${w}">${w}</option>`).join('');
+  });
+}
+
+/* =============== 1. STUDENT COUNT =============== */
+async function submitStudentCount(){
+  const date = document.getElementById('sc-date').value;
+  const count = document.getElementById('sc-count').value;
+  if(!date || count===''){ showToast('Күні мен санды толтырыңыз', 'err'); return; }
+  const weekday = WEEKDAYS_KK[new Date(date+'T00:00:00').getDay()];
+  const res = await api('saveStudentCount', {date, weekday, name: CURRENT_USER.name, count: Number(count)});
+  if(res.success){ showToast('Сақталды ✓', 'ok'); document.getElementById('sc-count').value=''; loadStudentHistory(); }
+  else showToast(res.error||'Қате шықты', 'err');
+}
+function groupByWeek(records, dateField, valueField, mode){
+  const buckets = {};
+  WEEK_RANGES.forEach(w => buckets[w.label] = []);
+  records.forEach(r => {
+    const label = getWeekLabelForDate(r[dateField]);
+    if(label) buckets[label].push(Number(r[valueField]) || 0);
+  });
+  return WEEK_RANGES.map(w => {
+    const vals = buckets[w.label];
+    if(!vals.length) return {label: w.label, value: null, count: 0};
+    const value = mode==='sum' ? vals.reduce((a,b)=>a+b,0) : Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+    return {label: w.label, value, count: vals.length};
+  });
+}
+function renderWeeklyBars(containerId, weekData, unit){
+  const box = document.getElementById(containerId);
+  const withData = weekData.filter(w=>w.value!==null);
+  if(!withData.length){ box.innerHTML = emptyState('Осы апталарға деректер әлі жоқ'); return; }
+  const maxVal = Math.max(...withData.map(w=>w.value), 1);
+  box.innerHTML = weekData.map(w=>{
+    if(w.value===null) return '';
+    const pct = unit==='%' ? Math.min(100,w.value) : Math.min(100, Math.round((w.value/maxVal)*100));
+    return `<div class="bar-row">
+      <div class="bar-label">${w.label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <div class="bar-value num">${w.value}${unit}</div>
+    </div>`;
+  }).join('');
+}
+async function loadStudentHistory(){
+  const box = document.getElementById('sc-history');
+  box.innerHTML = '<p style="color:var(--muted);font-size:13.5px;">Жүктелуде...</p>';
+  const res = await api('getMyStudentCounts', {name: CURRENT_USER.name});
+  if(!res.success || !res.records.length){ box.innerHTML = emptyState('Әзірге жазба жоқ'); document.getElementById('sc-weekly').innerHTML = emptyState('Деректер жоқ'); return; }
+  renderWeeklyBars('sc-weekly', groupByWeek(res.records, 'date', 'count', 'sum'), '');
+  const rows = res.records.slice().reverse().slice(0,15);
+  box.innerHTML = `<table><thead><tr><th>Күні</th><th>Апта күні</th><th>Саны</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr><td>${formatDateKZ(r.date)}</td><td>${r.weekday}</td><td class="num">${r.count}</td></tr>`).join('')}
+  </tbody></table>`;
+}
+
+/* =============== 2. PERFORMANCE (view) =============== */
+async function loadPerformance(){
+  const box = document.getElementById('perf-list');
+  box.innerHTML = '<p style="color:var(--muted);font-size:13.5px;">Жүктелуде...</p>';
+  const res = await api('getMyPerformance', {name: CURRENT_USER.name});
+  if(!res.success || !res.records.length){ box.innerHTML = emptyState('Әзірге өнімділік деректері жоқ'); document.getElementById('perf-weekly').innerHTML = emptyState('Деректер жоқ'); return; }
+  renderWeeklyBars('perf-weekly', groupByWeek(res.records, 'date', 'percent', 'avg'), '%');
+  const rows = res.records.slice().reverse().slice(0,10);
+  box.innerHTML = rows.map(r=>`
+    <div class="bar-row">
+      <div class="bar-label">${formatDateKZ(r.date)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.min(100,r.percent)}%"></div></div>
+      <div class="bar-value num">${r.percent}%</div>
+    </div>`).join('');
+}
+
+/* =============== 3. ST RECORD =============== */
+async function submitSTRecord(){
+  const date = document.getElementById('st-date').value;
+  const submittedCount = document.getElementById('st-submitted-count').value;
+  const recordLink = document.getElementById('st-record-link').value;
+  const trackingLink = document.getElementById('st-tracking-link').value;
+  const notes = document.getElementById('st-notes').value;
+  if(!date){ showToast('Күнді таңдаңыз', 'err'); return; }
+  const res = await api('saveSTRecord', {date, name:CURRENT_USER.name, recordLink, trackingLink, submittedCount: submittedCount===''?'':Number(submittedCount), notes});
+  if(res.success){ showToast('Сақталды ✓', 'ok'); document.getElementById('st-submitted-count').value=''; document.getElementById('st-record-link').value=''; document.getElementById('st-tracking-link').value=''; document.getElementById('st-notes').value=''; loadSTHistory(); }
+  else showToast(res.error||'Қате шықты', 'err');
+}
+async function loadSTHistory(){
+  const box = document.getElementById('st-history');
+  box.innerHTML = '<p style="color:var(--muted);font-size:13.5px;">Жүктелуде...</p>';
+  const res = await api('getMySTRecords', {name: CURRENT_USER.name});
+  if(!res.success || !res.records.length){ box.innerHTML = emptyState('Әзірге жазба жоқ'); return; }
+  const rows = res.records.slice().reverse().slice(0,15);
+  box.innerHTML = `<table><thead><tr><th>Күні</th><th>Тапсырған саны</th><th>Жазба</th><th>Отслежка</th><th>Ескерту</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr>
+      <td>${formatDateKZ(r.date)}</td>
+      <td class="num">${r.submittedCount!=null && r.submittedCount!=='' ? r.submittedCount : '—'}</td>
+      <td>${r.recordLink?`<a href="${r.recordLink}" target="_blank">сілтеме</a>`:'—'}</td>
+      <td>${r.trackingLink?`<a href="${r.trackingLink}" target="_blank">сілтеме</a>`:'—'}</td>
+      <td>${r.notes||'—'}</td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+/* =============== 4. OUTGOING REPORT =============== */
+async function submitOutgoingReport(){
+  const g = id => document.getElementById(id).value;
+  const chars = Array.from(document.querySelectorAll('#or-characteristics input:checked')).map(c=>c.value).join(', ');
+  if(!g('or-fullname') || !g('or-date')){ showToast('Күні мен аты-жөнін толтырыңыз', 'err'); return; }
+  const phone = g('or-phone') ? '+7' + g('or-phone') : '';
+  const parentPhone = g('or-parent-phone') ? '+7' + g('or-parent-phone') : '';
+  const bindSubject = (attendId, teacherName) => {
+    const subj = g(attendId);
+    if(!teacherName) return subj ? subj : '';
+    return subj ? `${subj} - ${teacherName}` : teacherName;
+  };
+  const payload = {
+    date:g('or-date'), fullName:g('or-fullname'), email:g('or-email'), phone, parentPhone,
+    chosenSubject:g('or-chosen'),
+    attend1:g('or-attend1'), attend2:g('or-attend2'), attend3:g('or-attend3'), attend4:g('or-attend4'),
+    leave1:g('or-leave1'), leave2:g('or-leave2'), leave3:g('or-leave3'), leave4:g('or-leave4'),
+    teacher1ps:bindSubject('or-attend1', g('or-t1ps')), teacher1vs:bindSubject('or-attend1', g('or-t1vs')),
+    teacher2ps:bindSubject('or-attend2', g('or-t2ps')), teacher2vs:bindSubject('or-attend2', g('or-t2vs')),
+    teacher3ps:bindSubject('or-attend3', g('or-t3ps')), teacher3vs:bindSubject('or-attend3', g('or-t3vs')),
+    reason:g('or-reason'), fullness:g('or-fullness'), reallyLeaving:g('or-reallyleaving'), level:g('or-level'),
+    characteristics:chars, curatorName: CURRENT_USER.name
+  };
+  const res = await api('saveOutgoingReport', payload);
+  if(res.success){
+    showToast('Есеп жіберілді ✓', 'ok');
+    document.querySelectorAll('#section-outgoing input[type=text], #section-outgoing input[type=email], #section-outgoing input[type=tel]').forEach(i=>i.value='');
+    document.querySelectorAll('#or-characteristics input').forEach(c=>c.checked=false);
+    updateTeacherBindings();
+  } else showToast(res.error||'Қате шықты', 'err');
+}
+
+/* =============== 5/6. WEEKLY LINKS (ЖАЛПЫ / СТ РЕЙТИНГ) =============== */
+async function loadWeeklyLinks(type){
+  const res = await api('getWeeklyLinks', {type});
+  RATING_LINKS_CACHE[type] = res.success ? res.links : [];
+  const confirmRes = await api('getMyWeeklyConfirmations', {name: CURRENT_USER.name, type});
+  RATING_CONFIRMED_CACHE[type] = confirmRes.success ? confirmRes.confirmed : [];
+  renderRatingList(type);
+}
+function renderRatingList(type){
+  const selId = type==='st' ? 'rst-week-select' : 'rg-week-select';
+  const boxId = type==='st' ? 'rating-st-list' : 'rating-general-list';
+  const selectedWeek = document.getElementById(selId).value;
+  const box = document.getElementById(boxId);
+  const links = RATING_LINKS_CACHE[type].filter(l => !selectedWeek || l.weekLabel === selectedWeek);
+  if(!links.length){ box.innerHTML = emptyState('Осы аптаға сілтеме әлі қосылмаған'); return; }
+  box.innerHTML = links.map(l=>{
+    const confirmed = RATING_CONFIRMED_CACHE[type].indexOf(l.weekLabel) !== -1;
+    return `<div class="link-item">
+      <div><div class="lbl">${l.weekLabel}</div><div class="sub">Drive қалтасы</div></div>
+      <div class="actions">
+        <a class="btn btn-ghost btn-sm" href="${l.link}" target="_blank">Ашу →</a>
+        <div class="toggle-switch ${confirmed?'on':''}" onclick="confirmWeek('${type}', '${l.weekLabel.replace(/'/g,"\\'")}', this)">
+          <div class="track"></div><span class="lbl">${confirmed?'Енгізілді':'Енгіздім'}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function confirmWeek(type, weekLabel){
+  const res = await api('confirmWeeklyLink', {name: CURRENT_USER.name, type, weekLabel});
+  if(res.success){ if(RATING_CONFIRMED_CACHE[type].indexOf(weekLabel)===-1) RATING_CONFIRMED_CACHE[type].push(weekLabel); showToast('Белгіленді ✓','ok'); renderRatingList(type); }
+}
+
+/* =============== ADMIN: USERS =============== */
+async function submitAddUser(){
+  const name = document.getElementById('au-name').value.trim();
+  const password = document.getElementById('au-pass').value.trim();
+  const role = document.getElementById('au-role').value;
+  const coordinator = document.getElementById('au-okr').value.trim();
+  if(!name || !password){ showToast('Аты-жөні мен парольді толтырыңыз', 'err'); return; }
+  const res = await api('adminAddUser', {name, password, role, coordinator});
+  if(res.success){ showToast('Қосылды ✓', 'ok'); document.getElementById('au-name').value=''; document.getElementById('au-pass').value=''; loadAdminUsers(); }
+  else showToast(res.error||'Қате шықты', 'err');
+}
+function roleLabelKZ(role){
+  if(role==='admin') return 'Админ';
+  if(role==='coordinator') return 'Координатор';
+  return 'Куратор';
+}
+let ADMIN_USERS_CACHE = [];
+async function loadAdminUsers(){
+  const res = await api('adminListUsers', {});
+  const tbody = document.getElementById('au-table');
+  if(!res.success){ tbody.innerHTML=''; return; }
+  ADMIN_USERS_CACHE = res.users;
+  tbody.innerHTML = res.users.map(u=>`<tr>
+    <td>${u.name}</td>
+    <td><span class="badge ${u.role==='admin'?'badge-success':(u.role==='coordinator'?'badge-neutral':'badge-neutral')}">${roleLabelKZ(u.role)}</span></td>
+    <td>${u.coordinator||'—'}</td>
+    <td><button class="btn btn-danger btn-sm" onclick="deleteUser('${u.name}')">Жою</button></td>
+  </tr>`).join('');
+  const coordSel = document.getElementById('au-okr');
+  const coordNames = res.users.filter(u=>u.role==='coordinator').map(u=>u.name);
+  coordSel.innerHTML = '<option value="">— таңдамаған —</option>' + coordNames.map(c=>`<option value="${c}">${c}</option>`).join('');
+  loadCuratorListForPerformance(res.users);
+  renderCoordinatorFilterTabs('asov-coord-filter', coordNames, (c)=>loadAdminStudentsOverview(c));
+  renderCoordinatorFilterTabs('astv-coord-filter', coordNames, (c)=>loadAdminSTOverview(c));
+  renderCoordinatorFilterTabs('aov-coord-filter', coordNames, (c)=>loadAdminOutgoingOverview(c));
+  renderCoordinatorFilterTabs('ap-coord-filter', coordNames, (c)=>loadCuratorListForPerformance(ADMIN_USERS_CACHE, c));
+}
+async function deleteUser(name){
+  if(!confirm(`"${name}" қолданушысын жою керек пе?`)) return;
+  const res = await api('adminDeleteUser', {name});
+  if(res.success){ showToast('Жойылды', 'ok'); loadAdminUsers(); } else showToast(res.error||'Қате','err');
+}
+function renderCoordinatorFilterTabs(containerId, coordNames, onSelect){
+  const box = document.getElementById(containerId);
+  if(!box) return;
+  const opts = [{label:'Барлығы', val:''}, ...coordNames.map(c=>({label:c, val:c}))];
+  box.innerHTML = opts.map((o,i)=>`<div class="month-tab ${i===0?'active':''}" data-c="${o.val}">${o.label}</div>`).join('');
+  box.querySelectorAll('.month-tab').forEach(t=>t.addEventListener('click', ()=>{
+    box.querySelectorAll('.month-tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    onSelect(t.dataset.c || null);
+  }));
+}
+
+/* =============== ADMIN: PERFORMANCE (multi-select) =============== */
+async function loadCuratorListForPerformance(users, coordinatorFilter){
+  if(!users){ const res = await api('adminListUsers', {}); users = res.success ? res.users : []; }
+  let curators = users.filter(u=>u.role==='curator');
+  if(coordinatorFilter) curators = curators.filter(u=>u.coordinator===coordinatorFilter);
+  const box = document.getElementById('ap-curator-list');
+  if(box) box.innerHTML = curators.map(u=>`<label class="multi-select-item"><input type="checkbox" class="ap-curator-cb" value="${u.name}"> ${u.name}</label>`).join('') || '<p style="color:var(--muted);font-size:13px;">Кураторлар жоқ</p>';
+}
+function toggleAllCurators(){
+  const checked = document.getElementById('ap-select-all').checked;
+  document.querySelectorAll('.ap-curator-cb').forEach(cb=>cb.checked=checked);
+}
+async function submitAdminPerformance(){
+  const names = Array.from(document.querySelectorAll('.ap-curator-cb:checked')).map(cb=>cb.value);
+  const date = document.getElementById('ap-date').value;
+  const percent = document.getElementById('ap-percent').value;
+  if(!names.length || !date || percent===''){ showToast('Кураторды, күнді және пайызды толтырыңыз', 'err'); return; }
+  const res = await api('adminSavePerformance', {names, date, percent:Number(percent)});
+  if(res.success){ showToast(`Сақталды ✓ (${names.length} куратор)`, 'ok'); document.getElementById('ap-percent').value=''; }
+  else showToast(res.error||'Қате шықты', 'err');
+}
+
+/* =============== ADMIN: STUDENTS / ST / OUTGOING OVERVIEW TABLES =============== */
+async function loadAdminStudentsOverview(coordinatorFilter){
+  const box = document.getElementById(coordinatorFilter ? 'coord-students-table' : 'admin-students-table');
+  box.innerHTML = '<p style="color:var(--muted);font-size:13.5px;">Жүктелуде...</p>';
+  const res = await api('adminGetAllStudentCounts', coordinatorFilter ? {coordinator: coordinatorFilter} : {});
+  if(!res.success || !res.records.length){ box.innerHTML = emptyState('Әзірге жазба жоқ'); return; }
+  box.innerHTML = `<table><thead><tr><th>Күні</th><th>Апта күні</th><th>Куратор</th>${coordinatorFilter?'':'<th>Координатор</th>'}<th>Оқушы саны</th></tr></thead><tbody>
+    ${res.records.map(r=>`<tr><td>${formatDateKZ(r.date)}</td><td>${r.weekday}</td><td>${r.name}</td>${coordinatorFilter?'':`<td>${r.coordinator||'—'}</td>`}<td class="num">${r.count}</td></tr>`).join('')}
+  </tbody></table>`;
+}
+async function loadAdminSTOverview(coordinatorFilter){
+  const box = document.getElementById(coordinatorFilter ? 'coord-st-table' : 'admin-st-table');
+  box.innerHTML = '<p style="color:var(--muted);font-size:13.5px;">Жүктелуде...</p>';
+  const res = await api('adminGetAllSTRecords', coordinatorFilter ? {coordinator: coordinatorFilter} : {});
+  if(!res.success || !res.records.length){ box.innerHTML = emptyState('Әзірге жазба жоқ'); return; }
+  box.innerHTML = `<table><thead><tr><th>Күні</th><th>Куратор</th>${coordinatorFilter?'':'<th>Координатор</th>'}<th>Тапсырған саны</th><th>Жазба</th><th>Отслежка</th><th>Ескерту</th></tr></thead><tbody>
+    ${res.records.map(r=>`<tr>
+      <td>${formatDateKZ(r.date)}</td><td>${r.name}</td>${coordinatorFilter?'':`<td>${r.coordinator||'—'}</td>`}
+      <td class="num">${r.submittedCount!=null && r.submittedCount!=='' ? r.submittedCount : '—'}</td>
+      <td>${r.recordLink?`<a href="${r.recordLink}" target="_blank">сілтеме</a>`:'—'}</td>
+      <td>${r.trackingLink?`<a href="${r.trackingLink}" target="_blank">сілтеме</a>`:'—'}</td>
+      <td>${r.notes||'—'}</td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+async function loadAdminOutgoingOverview(coordinatorFilter){
+  const box = document.getElementById(coordinatorFilter ? 'coord-outgoing-table' : 'admin-outgoing-table');
+  box.innerHTML = '<p style="color:var(--muted);font-size:13.5px;">Жүктелуде...</p>';
+  const res = await api('adminGetAllOutgoingReports', coordinatorFilter ? {coordinator: coordinatorFilter} : {});
+  if(!res.success || !res.records.length){ box.innerHTML = emptyState('Әзірге есеп жоқ'); return; }
+  box.innerHTML = `<table><thead><tr>
+    <th>Күні</th><th>Аты-жөні</th><th>Куратор</th>${coordinatorFilter?'':'<th>Координатор</th>'}<th>Таңдау пән</th><th>Байланыс</th>
+    <th>Шығу себебі</th><th>Толық/Толық емес</th><th>Нақты шыға ма</th><th>Деңгейі</th><th>Характеристика</th>
+  </tr></thead><tbody>
+    ${res.records.map(r=>`<tr>
+      <td>${formatDateKZ(r.date)}</td><td>${r.fullName}</td><td>${r.curatorName||r.name||'—'}</td>${coordinatorFilter?'':`<td>${r.coordinator||'—'}</td>`}<td>${r.chosenSubject||'—'}</td>
+      <td>${r.phone||''}${r.email?'<br>'+r.email:''}</td>
+      <td>${r.reason||'—'}</td><td>${r.fullness||'—'}</td><td>${r.reallyLeaving||'—'}</td><td>${r.level||'—'}</td><td>${r.characteristics||'—'}</td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+/* =============== ADMIN: LINKS =============== */
+async function submitAdminLink(type){
+  const weekLabel = document.getElementById(type==='st'?'al-st-week':'al-gen-week').value;
+  const link = document.getElementById(type==='st'?'al-st-link':'al-gen-link').value.trim();
+  if(!weekLabel || !link){ showToast('Апта мен сілтемені толтырыңыз', 'err'); return; }
+  const res = await api('adminSaveWeeklyLink', {type, weekLabel, link});
+  if(res.success){ showToast('Сақталды ✓', 'ok'); document.getElementById(type==='st'?'al-st-link':'al-gen-link').value=''; loadAdminLinksCollection(); }
+  else showToast(res.error||'Қате шықты', 'err');
+}
+async function loadAdminLinksCollection(){
+  const box = document.getElementById('admin-links-collection');
+  box.innerHTML = '<p style="color:var(--muted);font-size:13.5px;">Жүктелуде...</p>';
+  const [genRes, stRes] = await Promise.all([api('getWeeklyLinks', {type:'general'}), api('getWeeklyLinks', {type:'st'})]);
+  const genLinks = (genRes.success ? genRes.links : []).map(l=>Object.assign({type:'Жалпы'}, l));
+  const stLinks = (stRes.success ? stRes.links : []).map(l=>Object.assign({type:'СТ'}, l));
+  const all = [...genLinks, ...stLinks];
+  if(!all.length){ box.innerHTML = emptyState('Әзірге сілтеме қосылмаған'); return; }
+  box.innerHTML = `<table><thead><tr><th>Түрі</th><th>Ай-апта</th><th>Сілтеме</th></tr></thead><tbody>
+    ${all.map(l=>`<tr><td><span class="badge ${l.type==='СТ'?'badge-success':'badge-neutral'}">${l.type}</span></td><td>${l.weekLabel}</td><td><a href="${l.link}" target="_blank">${l.link}</a></td></tr>`).join('')}
+  </tbody></table>`;
+}
+
+/* =============== UTIL =============== */
+function emptyState(text){ return `<div class="empty-state"><div>📭</div><p>${text}</p></div>`; }
+
+/* =============== INIT =============== */
+document.getElementById('or-phone') && null;
+tryRestoreSession();
+</script>
+</body>
+</html>
